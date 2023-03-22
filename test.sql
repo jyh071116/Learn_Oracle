@@ -1,13 +1,13 @@
-create table book(
-  	bookid number primary key,
- 	bookname varchar2(20),
-  	publisher varchar2(20),
-  	price number
+CREATE TABLE book(
+  	bookid NUMBER PRIMARY KEY,
+ 	bookname VARCHAR2(20),
+  	publisher VARCHAR2(20),
+  	price NUMBER
   	);
 
-insert into book values(1, '축구의 역사', '굿스포츠', 7000);
-insert into book values(2, '축구아는 여자', '나무수', 13000);
-insert into book values(3, '축구의 이해', '대한미디어', 22000);
+INSERT INTO book VALUES(1, '축구의 역사', '굿스포츠', 7000);
+INSERT INTO book VALUES(2, '축구아는 여자', '나무수', 13000);
+INSERT INTO book VALUES(3, '축구의 이해', '대한미디어', 22000);
 
 CREATE TABLE customer(
     custid NUMBER PRIMARY KEY,
@@ -35,6 +35,6 @@ INSERT INTO orders VALUES(1, 1, 1, 6000, TO_DATE('2014-07-01', 'yyyy-mm-dd'));
 INSERT INTO orders VALUES(2, 1, 3, 21000, TO_DATE('2014-07-03', 'yyyy-mm-dd'));
 INSERT INTO orders VALUES(3, 2, 5, 8000, TO_DATE('2014-07-03', 'yyyy-mm-dd'));
 
-select * from book;
-select * from customer;
-select * from orders;
+SELECT * FROM book;
+SELECT * FROM customer;
+SELECT * FROM orders;
