@@ -71,13 +71,54 @@ SELECT DISTINCT m_group FROM menu;
 SELECT m_name FROM menu WHERE m_price >= 8000;
 SELECT u_id FROM "user" WHERE u_point BETWEEN 1000 AND 3000;
 
-update "user" set u_grade= 'sliver' where u_name='김경남'; 
-SELECT u_id from "user" where u_grade in('gold', 'sliver');
+UPDATE "user" SET u_grade= 'sliver' WHERE u_name='김경남'; 
+SELECT u_id FROM "user" WHERE u_grade IN('gold', 'sliver');
 
-insert all
-into menu values(6, '음료', '딸기라떼', 6000)
-into menu values(7, '음료', '딸기스무디', 7000)
-into menu values(8, '음료', '딸기프로틴', 6500)
-select * from dual;
+INSERT ALL
+INTO menu VALUES(6, '음료', '딸기라떼', 6000)
+INTO menu VALUES(7, '음료', '딸기스무디', 7000)
+INTO menu VALUES(8, '음료', '딸기프로틴', 6500)
+SELECT * FROM dual;
 
-select m_price from menu where m_name like '%딸기%';
+SELECT m_price FROM menu WHERE m_name LIKE '%딸기%';
+
+
+SELECT * FROM menu;
+
+UPDATE menu SET m_name='바닐라라떼' WHERE m_name='버블티';
+UPDATE menu SET m_price=7000 WHERE m_name='샌드위치';
+update menu set m_price=30000 where m_name='텀블러';
+DELETE FROM menu WHERE m_no BETWEEN 6 AND 8;
+
+INSERT ALL
+INTO menu VALUES(6, '푸드', '케익', 8000)
+INTO menu VALUES(7, '음료', '아메리카노', 4000)
+INTO menu VALUES(8, '음료', '라떼', 4500)
+INTO menu VALUES(9, '음료', '티', 5000)
+INTO menu VALUES(10, '푸드', '마카롱', 3000)
+INTO menu VALUES(11, '음료', '카페모카', 5500)
+INTO menu VALUES(12, '음료', '돌체라떼', 5900)
+INTO menu VALUES(13, '음료', '애플망고', 4500)
+INTO menu VALUES(14, '푸드', '샐러드', 6000)
+INTO menu VALUES(15, '푸드', '베이글', 30000)
+INTO menu VALUES(16, '음료', '레몬에이드', 6500)
+INTO menu VALUES(17, '음료', '아메리카노', 4000)
+INTO menu VALUES(18, '상품', '보온병', 45000)
+INTO menu VALUES(19, '상품', '쇼퍼백', 11000)
+INTO menu VALUES(20, '상품', '콜드컵', 13000)
+SELECT * FROM dual;
+
+SELECT * FROM menu WHERE m_price <= 10000;
+select * from menu where m_group in('음료', '푸드');
+select m_name, m_price from menu where m_name like '바닐라라떼';
+select * from menu where m_name like '%라떼' and m_price>=5000;
+select * from menu order by m_price desc;
+select * from menu order by m_price asc;
+
+select sum(m_price) from menu;
+select count(m_name) from menu;
+select max(m_price) from menu;
+select min(m_price) from menu;
+select avg(m_price) from menu where m_group='음료';
+select count(*), m_group from menu group by m_group;
+select count(*), m_group from menu group by m_group having count(*) >= 10;
