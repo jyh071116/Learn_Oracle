@@ -82,7 +82,7 @@ SELECT * FROM dual;
 
 SELECT m_price FROM menu WHERE m_name LIKE '%딸기%';
 
-
+--select
 SELECT * FROM menu;
 
 UPDATE menu SET m_name='바닐라라떼' WHERE m_name='버블티';
@@ -122,3 +122,8 @@ select min(m_price) from menu;
 select avg(m_price) from menu where m_group='음료';
 select count(*), m_group from menu group by m_group;
 select count(*), m_group from menu group by m_group having count(*) >= 10;
+
+--join (세타조인(동등조인), 자연조인)
+insert into orderlist values(1, to_date('2023/03/05','yyyy/mm/dd'),2,3,'음료','s',5000,1,5000);
+
+select * from menu, orderlist where menu.m_no = orderlist.m_no;
