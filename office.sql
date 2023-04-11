@@ -1,3 +1,4 @@
+--조인
 CREATE TABLE emp(
     emp_no NUMBER PRIMARY KEY,
     emp_name VARCHAR2(30),
@@ -28,8 +29,8 @@ select * from dual;
 
 select * from emp inner join dept on emp.dept_no = dept.dept_no; --inner join(속성명이 다를 때)
 select * from emp natural join dept; --natural join
-select * from emp inner join dept using(dept_no); --inner join 2(속성명이 같을 때
+select * from emp inner join dept using(dept_no); --inner join 2(속성명이 같을 때)
 
 select * from emp left outer join dept using(dept_no);
 select * from emp right outer join dept using(dept_no);
-select * from emp full outer join dept using(dept_no);
+select * from emp full outer join dept using(dept_no); 
