@@ -4,6 +4,7 @@ CREATE TABLE book(
     publisher VARCHAR2(40),
     price NUMBER(8)
 );
+
 CREATE TABLE customer(
     custid NUMBER(2) PRIMARY KEY,
     NAME VARCHAR2(40),
@@ -51,12 +52,41 @@ INSERT INTO orders VALUES (10, 3, 8, 13000, TO_DATE('2014-07-10','yyyy-mm-dd'));
 COMMIT;
 
 SELECT bookname FROM book WHERE price = (SELECT MAX(price) FROM book);
-select name from customer where custid in (select custid from orders);
 
-select name from customer where custid in (select custid from orders where bookid in (select bookid from book where publisher = '대한미디어'));
+SELECT NAME FROM customer WHERE custid IN (SELECT custid FROM orders);
 
-select name, address from customer where exists(select custid from orders);
+SELECT NAME FROM customer WHERE custid IN (SELECT custid FROM orders WHERE bookid IN (SELECT bookid FROM book WHERE publisher = '대한미디어'));
 
-select bookname from book where exists(select * from orders, customer where orders.custid = customer.custid and book.bookid = orders.bookid and address like '미국%');
+SELECT NAME, address FROM customer WHERE EXISTS(SELECT custid FROM orders);
 
-select name, address from customer cs where exists (select * from orders where cs.custid = orders.custid); 
+SELECT bookname FROM book B WHERE EXISTS(SELECT * FROM orders O, customer C WHERE O.custid = C.custid AND B.bookid = O.bookid AND address LIKE '대한민국%');
+
+SELECT NAME, address FROM customer CS WHERE EXISTS (SELECT * FROM orders WHERE CS.custid = orders.custid);
+
+
+
+
+
+
+
+--복습
+select name from customer where custid in(select custid from orders where bookid in(select bookid from book where publisher = '대한미디어'));
+select name from customer cs where exists(select * from orders od, book b where cs.custid = od.custid and od.bookid = b.bookid and publisher='대한미디어');
+
+select name, address
+from customer cs
+where exists(select *
+             from orders od
+             where cs.custid = od.custid);
+
+select sum(saleprice)
+from orders
+where exists(select *
+             from customer
+             where address like '대한민국%' and customer.custid = orders.custid);
+--박지성이 구매하지 않은 도서의 이름을 구하시오
+select bookname
+from book
+where not exists(select *
+             from customer, orders
+             where book.bookid = orders.bookid and orders.custid = customer.custid and name = '박지성');
