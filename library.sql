@@ -70,23 +70,56 @@ SELECT NAME, address FROM customer CS WHERE EXISTS (SELECT * FROM orders WHERE C
 
 
 --복습
-select name from customer where custid in(select custid from orders where bookid in(select bookid from book where publisher = '대한미디어'));
-select name from customer cs where exists(select * from orders od, book b where cs.custid = od.custid and od.bookid = b.bookid and publisher='대한미디어');
+SELECT NAME FROM customer WHERE custid IN(SELECT custid FROM orders WHERE bookid IN(SELECT bookid FROM book WHERE publisher = '대한미디어'));
+SELECT NAME FROM customer CS WHERE EXISTS(SELECT * FROM orders od, book B WHERE CS.custid = od.custid AND od.bookid = B.bookid AND publisher='대한미디어');
 
-select name, address
-from customer cs
-where exists(select *
-             from orders od
-             where cs.custid = od.custid);
+SELECT NAME, address
+FROM customer CS
+WHERE EXISTS(SELECT *
+             FROM orders od
+             WHERE CS.custid = od.custid);
 
-select sum(saleprice)
+SELECT SUM(saleprice)
+FROM orders
+WHERE EXISTS(SELECT *
+             FROM customer
+             WHERE address LIKE '대한민국%' AND customer.custid = orders.custid);
+--박지성이 구매하지 않은 도서의 이름을 구하시오.
+SELECT bookname AS "도서 이름"
+FROM book bk
+WHERE NOT EXISTS(SELECT *
+             FROM customer cs, orders od
+             WHERE NAME = '박지성' AND bk.bookid = od.bookid AND od.custid = cs.custid);
+            
+--평균 주문금액 이하의 주문에 대해서 주문번호와 금액을 보이시오.
+select orderid, saleprice
 from orders
-where exists(select *
-             from customer
-             where address like '대한민국%' and customer.custid = orders.custid);
---박지성이 구매하지 않은 도서의 이름을 구하시오
-select bookname
-from book
-where not exists(select *
-             from customer, orders
-             where book.bookid = orders.bookid and orders.custid = customer.custid and name = '박지성');
+where saleprice <= (select avg(saleprice)
+                    from orders);
+                   
+--각 고객의 평균 주문금액보다 큰 금액의 주문 내역에 대해서 주문번호, 고객번호, 금액을 보이시오.
+select orderid, custid, saleprice
+from orders od1
+where saleprice > (select avg(saleprice)
+                    from orders od2
+                    where od1.custid = od2.custid);
+
+
+select * from orders od1, orders od2 where od1.custid = od2.custid;
+--3번 고객이 주문한 도서의 최고 금액보다 더 비싼 도서를 구입한 주문의 주문번호와 금액을 보이시오.
+select orderid, saleprice
+from orders
+where saleprice > all (select saleprice
+                       from orders
+                       where custid=3);
+                       
+select orderid, saleprice
+from orders
+where saleprice > (select max(saleprice)
+                       from orders
+                       where custid=3);
+
+--고객별
+select name, sum(saleprice)
+from orders natural join customer
+group by name;
