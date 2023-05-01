@@ -123,3 +123,74 @@ where saleprice > (select max(saleprice)
 select name, sum(saleprice)
 from orders natural join customer
 group by name;
+
+--내장함수
+-- -78과 +78의 절대값을 구하시오.
+select abs(-78) from dual;
+select abs(78) from dual;
+
+--4.875를 소수 첫째 자리까지 반올림한 값을 구하시오.
+select round(4.875, 1)
+from dual;
+
+--고객별 평균 주문금액을 백 원 단위로 반올림한 값을 구하시오.
+select custid "고객번호", round(avg(saleprice), -2) "평균 주문금액"
+from orders
+group by custid;
+
+--마당서점은 주문일로부터 10일 후 매출을 확정한다. 각 주문의 확정일자를 구하시오.
+select orderid "주문번호", orderdate "주문일", orderdate+10 "확정일자"
+from orders;
+
+--마당서점에 도서를 출고하는 출판사의 총 개수를 구하시오.
+select count(distinct publisher) "출판사의 개수"
+from book;
+
+--주문하지 않은 고객의 이름을 구하시오.
+select name
+from customer
+where name not in(
+    select name
+    from customer, orders
+    where customer.custid = orders.custid);
+
+--고객별 평균판매액을 구하시오.
+--단, 도서의 판매액 평균보다 자신의 구매액의 평균이 더 높은 고객만 구하시오.
+select name, avg(saleprice)
+from customer natural join orders
+group by name
+having avg(saleprice) > (
+    select avg(saleprice)
+    from orders);
+
+
+select *
+from customer natural join orders;
+
+
+--'삼성당' 에서 출판한 도서를 삭제하시오.
+delete from book
+where publisher like '삼성당';
+
+select * from book;
+
+--출판사 '대한미디어'를 대한출판사'로 이름을 바꾸시오.
+update book
+set publisher = '대한출판사'
+where publisher like '대한미디어';
+
+select * from book;
+
+--출판사에 대한 정보를 저장하는 테이블 Bookcompany(name, address, begin)를 생성하고자 한다.
+--name은 기본키며 VARCHAR2(20), address는 VARCHAR2(20), begin은 DATE타입으로 선언하여 생성하시오.
+create table Bookcompany(
+    name varchar2(20) primary key,
+    address varchar2(20),
+    begin date
+);
+
+insert into bookcompany values('박소마', '부산', to_date('2023-05-01', 'yyyy-mm-dd'));
+select * from bookcompany;
+
+--Bookcompany 테이블에 인터넷 주소를 저장하는 webaddress 속성을 varchar(30)으로 추가하시오.
+alter table Bookcompany add webaddress varchar(30);
