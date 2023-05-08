@@ -163,11 +163,6 @@ having avg(saleprice) > (
     select avg(saleprice)
     from orders);
 
-
-select *
-from customer natural join orders;
-
-
 --'삼성당' 에서 출판한 도서를 삭제하시오.
 delete from book
 where publisher like '삼성당';
@@ -194,3 +189,89 @@ select * from bookcompany;
 
 --Bookcompany 테이블에 인터넷 주소를 저장하는 webaddress 속성을 varchar(30)으로 추가하시오.
 alter table Bookcompany add webaddress varchar(30);
+
+--NULL값 처리
+CREATE TABLE mybook(
+    bookid NUMBER,
+    price NUMBER
+);
+
+INSERT INTO mybook VALUES(1, 10000);
+INSERT INTO mybook VALUES(2, 20000);
+INSERT INTO mybook VALUES(3, NULL);
+COMMIT;
+
+--NVL함수
+SELECT name, NVL(phone, '연락처 없음')
+FROM customer;
+
+--book 테이블에서 '축구'라는 문구가 포함된 자료만 보여주는 뷰
+create view vw_book
+    as select *
+    from book
+    where bookname like '%축구%';
+    
+select * from vw_book;
+
+--주소에 '대한민국'을 포함하는 고객들로 구성된 뷰를 만들고 조회하시오.
+create view vw_customer
+    as select *
+    from customer
+    where address like '%대한민국%';
+    
+select * from vw_customer;
+
+--orders테이블에 고객이름과 도서이름을 바로 확인할 수 있는 뷰를 생성한 후,
+--'김연아'고객이 구입한 도서의 주문번호, 도서이름, 주문액을 보이시오.
+create view vw_orders
+    as select orderid, bookname, name, saleprice
+    from customer c, book b, orders o
+    where c.custid = o.custid and o.bookid = b.bookid;
+
+select orderid, bookname, saleprice
+from vw_orders
+where name='김연아';
+
+--vw_customer은 주소가 대한민국인 고객을 보여준다. 이 뷰를 영국을 주소로
+--가진 고객으로 변경하시오. phone 속성은 필요 없으므로 포함시키지 마시오.
+create or replace view vw_customer
+    as select custid, name, address
+    from customer
+    where address like '%영국%';
+    
+select * from vw_customer;
+
+--앞서 생성한 뷰 vw_customer를 삭제하시오.
+drop view vw_customer;
+
+--(1)판매가격이 20, 000원 이상인 도서의 도서번호, 도서이름, 출판사, 판매가격을 보여주는
+--highorders 뷰를 생성하시오.
+create view highorders
+    as select book.bookid, bookname, name, publisher, saleprice
+    from orders, book, customer
+    where orders.bookid = book.bookid and orders.custid = customer.custid and saleprice >= 20000;
+
+--(2)생성한 뷰를 이용하여 판매된 도서의 이름과 고객의 이름을 출력하는 SQL문을 작성하시오.
+select bookname, name
+from highorders;
+
+--(3)highboards 뷰를 변경하고자 한다. 판매가격 속성을 삭제하는 명령을 수행하시오.
+--삭제 후 (2)번 SQL문을 다시 수행하시오.
+create or replace view highorders
+    as select book.bookid, bookname, name, publisher
+    from orders, book, customer
+    where orders.bookid = book.bookid and orders.custid = customer.custid and saleprice >= 20000;
+    
+--도서의 가격과 판매가격의 차이가 가장 많은 주문
+select *
+from orders o, book b, customer c
+where o.bookid = b.bookid and o.custid = c.custid and (abs(saleprice-price)) = (select max(abs(saleprice-price))
+from orders natural join book);
+
+--전체 고객의 30% 이상이 구매한 도서
+select bookname
+from book b, customer c, orders o
+where b.bookid = o.bookid and o.custid = c.custid
+group by bookname
+having count(bookname) > (
+    select count(custid) from customer) * 0.3;
